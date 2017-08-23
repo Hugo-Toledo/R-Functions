@@ -1,0 +1,156 @@
+---
+title: "Pregnancy Dx Editing"
+author:
+- Hugo Toledo-Alvarado
+output: 
+  pdf_document:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+\newpage
+
+#Data Description and First Edition 
+
+The data comes from the northeast Bolzano region, (Italy). The information its collected by the Milk Federation Alto Adige, that integrates ten cheese and milk making cooperatives. The majority of the milk farms are located between 800 - 2000 meters above the sea level (there are 4,282 herds). The production data includes information of milk production, milk composition and the spectra of each record, from the year 2010 to April 2016, it is collected and send it to University of Padova every month. Also there is available a data set with fertility information of the same cows that can be related with the spectra. 
+
+The data for fertility contains 798,711 inseminations, and the information from testdays is associated with the inseminations and used to calculate fertility traits. Then a data quality editions was done:
+  
+  * Assigns dates of parity before and after each insemination.
+  * Create new variables: parto_p, parto_d, lact_no, n_fec, iCF, iFC, DO, NRR, CFS, INS, **preg**. 
+  * Delete observations with duplicated values (Matricola Data_fec)
+  * If data was available for a subsequent calving, the pregnancy was required to be within 30 d from the average of pregnancy days calculated for each breed group. If the pregnancy time was outside this limit, the data was considered missing. 
+  * If the difference between fecundations is greater  than 300 d (3 DS from the mean) the record is considered missing.  
+  * If the calving interval is greater than 733 d (3 DS from the mean) the record is considered missing.
+  * If the interval from parturition to conception is less than 20 d ( first cycle) the record is considered missing.
+  * Deleted inseminations with a missing Parto_p
+  * Delete animals with no breed
+  * Delete animals with calving less than year 2009
+
+Table: Data sets with fertility and testdays(spectra) for merge after first edition.
+
+Dataset | Records
+--- | ---:
+Inseminations | 225,275
+Testdays  | 2,005,000
+Merged | **183,922**
+
+Edition for the merge:
+
+  * Delete crossbreed
+  * Delete Rossa Danesse
+  * Delete records with no information of milk, fat or prot
+  * Only keeps records with pregnancy confirmed (**parity before and after**)
+  * Select the closest testday after the insemination
+  * Delete repeated inseminations
+
+\newpage
+
+#Second Data Edition
+
+  * Delete testdays where the distance to the insemination is greater than 90 days
+  * Delete testdays where the days in milk are greater than 305
+  * Transform ccs to log(ccs)
+  * Calculate Mahalanobis distances and delete outliers > 3ds
+  * Total records **168,100**
+
+\newpage
+
+Edition for Mahalanobis Distances
+
+![Mahalanobis distances for raw spectra, 330 records > 3ds](~/Dropbox/PhD/Laboratory/R_Programs/Bz_Fer_Dx/Output/mydist_bz.png)
+
+Table: Descriptive Statistics for Mahalanobis Distances before Edition
+
+Min. | 1st Qu. | Median | Mean | SD | 3rd Qu. | Max.
+---: | ---: | ---: | ---: |---: | ---: | ---:
+166.8 | 297.8 | 345.4 | 388.0 | 642.2 | 410.9 | 82250.0 
+
+\newpage
+
+![Mahalanobis distances after edition for raw spectra, 330 records deleted](~/Dropbox/PhD/Laboratory/R_Programs/Bz_Fer_Dx/Output/mydist_bz_edited.png)
+
+Table: Descriptive Statistics for Mahalanobis Distances before Edition
+
+Min. | 1st Qu. | Median | Mean | SD | 3rd Qu. | Max.
+---: | ---: | ---: | ---: |---: | ---: | ---:
+166.8 | 297.7 | 345.2 | 372.2 | 133.7 | 410.5 | 2311.0 
+
+\newpage
+
+#Plots and Descriptive Statistics
+
+![Spectra means and sd](~/Dropbox/PhD/Laboratory/R_Programs/Bz_Fer_Dx/Output/means_bz.png)
+
+The MWIR-LWIR, MWIR2 and MWIR1  regions usually are the most informative regions to predict fat, protein and lactose components. The MWIR2 also measures $H_2O$ so the variability is high. The SWIR-MWIR region detects bonds typical of alcohols, phenols, and carboxylic acids and the N-H bonds of primary and secondary amines. The SWIR region is not predictive important for milk and usually is discarded, it measures O-H bonds. A better description is given by Bittante and Cecchinato, 2013[^1]. 
+  
+ 
+[^1]:Bittante, G., and A. Cecchinato. "Genetic analysis of the Fourier-transform infrared spectra of bovine milk with emphasis on individual wavelengths related to specific chemical bonds." Journal of dairy science 96.9 (2013): 5991-6006. 
+
+\newpage
+
+```{r DIM,fig.align='center',message=FALSE, warning=FALSE, fig.cap="1.-Days in Milk for testdays. 2.-Distance from the Insemination to the Testday", out.width='.49\\textwidth',fig.show='hold', eval=TRUE}
+load("~/Desktop/HugoToledo/DataDx/YandXF.RData")
+require(ggplot2)
+qplot(XF$days_milk,xlab="days",color=I("grey"),fill=I("powderblue"))+theme_light(base_size = 16)
+qplot(XF$days_dif,xlab="days",color=I("grey"),fill=I("powderblue"))+theme_light(base_size = 16)
+```
+
+
+Table: Number of testdays for each distance (days) from the insemination  to the testday.
+
+Day	|	No	|	Day	|	No	|	Day	|	No	|	Day	|	No	|	Day	|	No	|	Day	|	No
+---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:
+ 1 	|	 4,894 	|	 16 	|	 4,700 	|	 31 	|	 3,045 	|	 46 	|	 454 	|	 61 	|	 336 	|	 76 	|	 144 
+ 2 	|	 4,857 	|	 17 	|	 4,761 	|	 32 	|	 2,821 	|	 47 	|	 436 	|	 62 	|	 369 	|	 77 	|	 129 
+ 3 	|	 4,865 	|	 18 	|	 4,687 	|	 33 	|	 2,643 	|	 48 	|	 433 	|	 63 	|	 311 	|	 78 	|	 133 
+ 4 	|	 4,813 	|	 19 	|	 4,696 	|	 34 	|	 2,439 	|	 49 	|	 450 	|	 64 	|	 312 	|	 79 	|	 128 
+ 5 	|	 4,784 	|	 20 	|	 4,614 	|	 35 	|	 2,286 	|	 50 	|	 423 	|	 65 	|	 334 	|	 80 	|	 109 
+ 6 	|	 4,807 	|	 21 	|	 4,620 	|	 36 	|	 1,765 	|	 51 	|	 421 	|	 66 	|	 298 	|	 81 	|	 127 
+ 7 	|	 4,852 	|	 22 	|	 4,378 	|	 37 	|	 1,196 	|	 52 	|	 452 	|	 67 	|	 274 	|	 82 	|	 94 
+ 8 	|	 4,773 	|	 23 	|	 4,124 	|	 38 	|	 947 	|	 53 	|	 412 	|	 68 	|	 293 	|	 83 	|	 130 
+ 9 	|	 4,709 	|	 24 	|	 4,097 	|	 39 	|	 748 	|	 54 	|	 413 	|	 69 	|	 256 	|	 84 	|	 114 
+ 10 	|	 4,766 	|	 25 	|	 3,979 	|	 40 	|	 549 	|	 55 	|	 427 	|	 70 	|	 267 	|	 85 	|	 122 
+ 11 	|	 4,746 	|	 26 	|	 3,953 	|	 41 	|	 534 	|	 56 	|	 421 	|	 71 	|	 218 	|	 86 	|	 113 
+ 12 	|	 4,637 	|	 27 	|	 3,921 	|	 42 	|	 535 	|	 57 	|	 390 	|	 72 	|	 201 	|	 87 	|	 108 
+ 13 	|	 4,730 	|	 28 	|	 3,767 	|	 43 	|	 482 	|	 58 	|	 374 	|	 73 	|	 177 	|	 88 	|	 108 
+ 14 	|	 4,819 	|	 29 	|	 3,634 	|	 44 	|	 457 	|	 59 	|	 362 	|	 74 	|	 170 	|	 89 	|	 105 
+ 15 	|	 4,824 	|	 30 	|	 3,393 	|	 45 	|	 441 	|	 60 	|	 377 	|	 75 	|	 178 	|	 90 	|	 109 
+
+\newpage
+
+```{r Milk,fig.align='center',message=FALSE, warning=FALSE, fig.cap="Milk production in the test day and predicted CCS", out.width='.49\\textwidth',fig.show='hold'}
+qplot(XF$milk, xlab = "kg",color=I("grey"),fill=I("powderblue"))+ theme_light(base_size = 16)
+qplot(log(XF$ccs),xlab = "log(CCS)",color=I("grey"),fill=I("powderblue"))+ theme_light(base_size = 16)
+```
+
+```{r Fat,fig.align='center',message=FALSE, warning=FALSE, fig.cap="Milk components predicted in the test day", out.width='.49\\textwidth',fig.show='hold'}
+qplot(XF$fat, xlab = "Fat %",color=I("grey"),fill=I("powderblue"))+ theme_light(base_size = 16)
+qplot(XF$prot,xlab = "Prot %",color=I("grey"),fill=I("powderblue"))+ theme_light(base_size = 16)
+```
+
+\newpage
+
+Table: Number of records for each breed.
+
+Brown Swiss | Holstein | Italian Simmental | Grey Alpine | Pinzgau | Jersey | Total
+---: | ---: |---: | ---: | ---: | ---: | ---:  
+59,223 | 29,960  | 49,505 | 24,667 | 3,638 | 1,107 | 168,100
+
+Table: Number of animals in each lactation.
+
+Parity |  1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | =>10 
+:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:
+No | 55,462 | 41,235 | 29,298 | 19,091 | 11,160 |  6,239 | 3,106 | 1,483 | 684 | 342 
+
+Table: Number of animals pregnant  and non-pregnant.
+
+Pregnant | Non-Pregnant | Total
+---: | ---: | ---:
+109,636 | 58,464 | 168,100
+
+\newpage
