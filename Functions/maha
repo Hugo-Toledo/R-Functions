@@ -1,4 +1,5 @@
-```{r }
+```r
+
 ### Mahalanobis Distances Editing ###
 maha <-function(X,std=TRUE){
   library(MASS)
