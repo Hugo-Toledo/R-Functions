@@ -1,3 +1,5 @@
+### Function to transform transmitances to absorbances in R
+
 ```r 
 load(file="C:/IGP Vittelone/Data/1.0_Data_Edited_labspec.RData")
 
