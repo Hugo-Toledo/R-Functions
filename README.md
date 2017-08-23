@@ -2,4 +2,5 @@
 Common functions in R 
 
 *Transform Transmitance to Absorbances*
+R-Functions/Functions/maha
 
