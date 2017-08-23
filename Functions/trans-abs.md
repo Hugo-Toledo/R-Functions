@@ -1,4 +1,4 @@
-###Transminances to Absrobances in R
+### Transminances to Absrobances in R
 ```r
 load(file="C:/IGP Vittelone/Data/1.0_Data_Edited_labspec.RData")
 
