@@ -6,8 +6,8 @@ TA <-function(X){
     for (i in 1:ncol(X)){
       for (j in 1:nrow(X)){
         X.a[j,i]= log10(1/X[j,i])
-        print(paste0("Absorbance for WL ",i))
       }
+      print(paste0("Absorbance for WL ",i))
     }
  return(X.a)
 } 
