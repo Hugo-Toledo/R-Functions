@@ -1,4 +1,4 @@
-## Mahalanobis Distances for Spectra
+## Mahalanobis Distances for Spectral Data
 
 ```r
 
