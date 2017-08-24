@@ -1,6 +1,7 @@
+## Mahalanobis Distances for Spectra
+
 ```r
 
-### Mahalanobis Distances Editing ###
 maha <-function(X,std=TRUE){
   library(MASS)
   if (std){
