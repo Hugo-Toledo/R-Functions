@@ -1,6 +1,6 @@
 # R-Functions
-Common functions in R 
+Usefull functions in R 
 
-*Transform Transmitance to Absorbances*
-R-Functions/Functions/maha
+  * [Transform Transmitance to Absorbance](R-Functions/Functions/trans-abs)
+  * [Calculate Mahalanobis Distances for Spectra](R-Functions/Functions/maha)
 
