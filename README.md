@@ -7,4 +7,4 @@ Usefull functions in R
 # R-Scripts
 Usefull commands and scripts in R
 
- * [Strings in R]()
+ * [Strings in R](R-Functions-and-Scripts/Scripts/strings)
