@@ -62,4 +62,6 @@ sprintf("%E", pi)         # exponential decimal notation 'E'
 It is posible to create sequences combining numbers and strings
 ```R
 sprintf("_%d",seq(1,15))
+tmp<-paste((sprintf("_%d",seq(1,15))),sep = "", collapse = "|")
+tmp1=grep(pattern = dobles,x = tmp)
 ```
